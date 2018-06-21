@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>qgyblog首页</title>
+
+    <!-- Bootstrap -->
+    <link href="/qgyblog/css/common/bootstrap.css" rel="stylesheet"/>
+    <link href="/qgyblog/css/user/index.css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--导航栏-->
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/qgyblog/user/home">qgyblog</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+
+                <li><a href="/qgyblog/user/search/blog?param=java">java</a></li>
+                <!--<li><a href="#">新闻</a></li>-->
+            </ul>
+            <form class="navbar-form navbar-left" action="/qgyblog/user/search/blog" method="get">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search"  name="param"/>
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+
+                <#if !userLoginInfo??>
+                    <li><a href="#" data-toggle="modal" data-target="#userLogin">请登录/注册</a></li>
+                    <#else>
+                        <li><a href="/qgyblog/user/blog/toadd">你好： ${(userLoginInfo.userName)!}</a></li>
+                        <li><a href="/qgyblog/user/login/exit">loginOut</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">我的消息<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">系统消息<span class="badge">14</span></a></li>
+                                <li><a href="/qgyblog/user/first/comment/message">我的留言</a></li>
+                                <li><a href="#"></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">全部已读</a></li>
+                            </ul>
+                        </li>
+                </#if>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<!--消息框-->
+<!--貌似??标签只是判断这个变量是否存在 不是判断这个变量是否为空 为null-->
+<#if (message??)&&((message!)!="")>
+    <div class="container">
+        <div class="alert alert-warning alert-dismissable fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Clocs">
+                <span aria-hidden="true">X</span>
+            </button>
+            ${message!"默认值"}
+        </div>
+    </div>
+</#if>
+
+<!--内容-->
+<div class="container">
+    <div class="row">
+        <!--左侧放置用户信息和一些功能-->
+        <div class="col-md-3 ">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!--头像-->
+                    <div class="row ">
+                        <div class="col-md-8 col-md-offset-2 text-center">
+
+                            <#if !userLoginInfo??>
+                                <!--未登录状态-->
+                                <h3>亲你还没有登录哦！</h3>
+                                <div class="btn-group">
+                                    <a type="button" data-toggle="modal" data-target="#userLogin" class=" btn bg-info">登录</a>
+                                    <a href="/qgyblog/getui/user/register/" type="button" class="btn btn-default">注册</a>
+                                </div>
+                                <#else>
+                                    <!--已经登录状态-->
+
+                                    <a href="/qgyblog/getui/user/userInfo/" class="">
+                                        <img src="${(userLoginInfo.userHeadImg)!'/qgyblog/img/head.png'}"
+                                             class="img-thumbnail img-circle" alt="头像">
+                                    </a>
+                                    <!--用户名-->
+                                    <h3><a href="/qgyblog/user/blog/find/${(userLoginInfo.userId)!-1}/list">${(userLoginInfo.userName)!}</a>
+                                    </h3>
+                                    <h5>${(userLoginInfo.userDesc)!}</h5>
+                                    <!--<div>共<span>6</span>博客</div>-->
+                            </#if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--中间内容-->
+        <div class="col-md-6">
+            <ul class="nav nav-tabs nav-justified">
+                <li role="presentation" class="active"><a href="#TuiJian" role="tab" data-toggle="tab">推荐</a></li>
+                <li role="presentation"><a href="#ReMen" role="tab" data-toggle="tab">热门</a></li>
+                <li role="presentation"><a href="#ZuiXin" role="tab" data-toggle="tab">最新</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="TuiJian">
+
+                    <div class="list-group">
+                        <!--文章-->
+                        <#list userIndexTuiJianBlog as item>
+                            <a href="/qgyblog/user/blog/find/${(item.blog.blogId)!}/detail" class="list-group-item ">
+                                <h4 class="list-group-item-heading">${(item.blog.blogTitle)!} </h4>
+                                <p class="list-group-item-text">${(item.blog.blogDesc)!}</p>
+                                <div class="row">
+                                    <div class="col-md-4">${(item.blog.user.userName)!}</div>
+                                    <div class="col-md-2 text-center"><span class="label label-default">${(item.blog.allClass.allClassName)!}</span>
+                                    </div>
+                                    <div class="col-md-6 text-right">点赞量：<span>${(item.thumbBlogNum)!0}</span>&nbsp;收藏量：<span>${(item.collectNum)!0}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </#list>
+
+                    </div>
+                </div>
+                <div class="tab-pane " id="ReMen">
+                    <div class="list-group">
+                        <#list userIndexHotBlog as item>
+                            <a href="/qgyblog/user/blog/find/${(item.blog.blogId)!}/detail" class="list-group-item ">
+                                <h4 class="list-group-item-heading">${(item.blog.blogTitle)!} </h4>
+                                <p class="list-group-item-text">${(item.blog.blogDesc)!}</p>
+                                <div class="row">
+                                    <div class="col-md-4">${(item.blog.user.userName)!}</div>
+                                    <div class="col-md-2 text-center"><span class="label label-default">${(item.blog.allClass.allClassName)!}</span>
+                                    </div>
+                                    <div class="col-md-6 text-right">浏览量：<span>${(item.pageviewsBlogNum)!0}</span></div>
+                                </div>
+                            </a>
+                        </#list>
+                    </div>
+                </div>
+                <div class="tab-pane" id=ZuiXin>
+                    <!--最新-->
+                    <div class="list-group">
+                        <#list userIndexNewBlog as item>
+                            <a href="/qgyblog/user/blog/find/${(item.blogId)!}/detail" class="list-group-item ">
+                                <h4 class="list-group-item-heading">${(item.blogTitle)!} </h4>
+                                <p class="list-group-item-text">${(item.blogDesc)!}</p>
+                                <div class="row">
+                                    <div class="col-md-4">${(item.user.userName)!}</div>
+                                    <div class="col-md-2 text-center"><span class="label label-default">${(item.allClass.allClassName)!}</span>
+                                    </div>
+                                    <div class="col-md-6 text-right"><span>${(item.blogUpdateTime)!}</span></div>
+                                </div>
+                            </a>
+                        </#list>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h4>人气博主排行</h4>
+                </div>
+                <div class="list-group text-center">
+                    <!--博主-->
+                    <#if userIndexRenQiUser??>
+                        <#list  userIndexRenQiUser as item>
+                            <a class="list-group-item" href="/qgyblog/user/blog/find/${(item.userId)!}/list">
+                                <h5>${(item.userName)!}</h5>
+                            </a>
+                        </#list>
+                    </#if>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!---->
+<!--底部-->
+
+<div class="container">
+
+
+</div>
+
+
+<!-- 登录框 -->
+<div class="modal fade" id="userLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">请登录</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/qgyblog/user/login" method="post">
+                    <div class="form-group-lg form-group">
+                        <input type="email" class="form-control" name="userEmail" id="userEmail" placeholder="邮箱"
+                               required>
+                        <input type="password" class="form-control" name="userPassword" id="userPassword"
+                               placeholder="密码" required>
+                    </div>
+                    <div class="form-group">
+                        <p class="text-right"><a href="/qgyblog/getui/user/register/">前去注册</a></p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info btn-block btn-lg">登录</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 注册框 -->
+<!--<div class="modal fade" id="userRegist" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+<!--<div class="modal-dialog modal-sm" role="document">-->
+<!--<div class="modal-content">-->
+<!--<div class="modal-header">-->
+<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>-->
+<!--</button>-->
+<!--<h4 class="modal-title" id="myModalLabel">请登录</h4>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--<form action="#">-->
+<!--<div class="form-group-lg form-group">-->
+<!--<input type="email" class="form-control" name="userEmail" id="userEmail" placeholder="邮箱">-->
+<!--<input type="password" class="form-control" name="userPassword" id="userPassword"-->
+<!--placeholder="密码">-->
+<!--</div>-->
+<!--<div class="form-group">-->
+<!--<p class="text-right"><a href="">前去注册</a></p>-->
+<!--</div>-->
+<!--<div class="form-group">-->
+<!--<button type="submit" class="btn btn-info btn-block btn-lg">登录</button>-->
+<!--</div>-->
+<!--</form>-->
+<!--</div>-->
+
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<!--<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>-->
+<script src="/qgyblog/js/common/jquery-1.9.1.min.js" type="text/javascript"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/qgyblog/js/common/bootstrap.min.js"></script>
+</body>
+</html>

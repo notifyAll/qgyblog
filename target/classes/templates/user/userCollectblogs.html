@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>个人blog</title>
+    <!-- 个人用户的所有blog -->
+
+    <link href="/qgyblog/css/common/bootstrap.css" rel="stylesheet"/>
+    <link href="/qgyblog/css/user/index.css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--导航栏-->
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/qgyblog/user/home">qgyblog</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+
+                <li><a href="/qgyblog/user/search/blog?param=java">java</a></li>
+                <!--<li><a href="#">新闻</a></li>-->
+            </ul>
+            <form class="navbar-form navbar-left" action="/qgyblog/user/search/blog" method="get">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search"  name="param"/>
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+
+                <#if !userLoginInfo??>
+                    <li><a href="/qgyblog/getui/user/login/">请登录/注册</a></li>
+                    <#else>
+                        <li><a href="/qgyblog/user/blog/toadd">你好： ${(userLoginInfo.userName)!}</a></li>
+                        <li><a href="/qgyblog/user/login/exit">loginOut</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">我的消息<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">系统消息<span class="badge">14</span></a></li>
+                                <li><a href="/qgyblog/user/first/comment/message">我的留言</a></li>
+                                <li><a href="#"></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">全部已读</a></li>
+                            </ul>
+                        </li>
+                </#if>
+
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<!--消息框-->
+<#if (message??)&&((message!)!="")>
+    <div class="container">
+        <div class="alert alert-warning alert-dismissable fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Clocs">
+                <span aria-hidden="true">X</span>
+            </button>
+            ${message!"默认值"}
+        </div>
+    </div>
+</#if>
+
+<div class="container">
+    <div class="row">
+        <!--左侧 基本信息 和一个按钮组-->
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <!--头像-->
+                    <div class="row ">
+                        <div class="col-md-8 col-md-offset-2 text-center">
+                            <#if !userLoginInfo??>
+                                <!--未登录状态-->
+                                <h3>亲你还没有登录哦！</h3>
+                                <div class="btn-group">
+                                    <button type="button" class=" btn bg-info">登录</button>
+                                    <button type="button" class="btn btn-default">注册</button>
+                                </div>
+                                <#else>
+                                    <!--已经登录状态-->
+
+                                    <a href="#" class="">
+                                        <img src="${(userLoginInfo.userHeadImg)!'/qgyblog/img/head.png'}"
+                                             class="img-thumbnail img-circle" alt="头像">
+                                    </a>
+                                    <!--用户名-->
+                                    <h3>${(userLoginInfo.userName)!}</h3>
+                                    <h5>${(userLoginInfo.userDesc)!}</h5>
+                                    <div>共<span>6</span>博客</div>
+                            </#if>
+                        </div>
+                    </div>
+                    <br/>
+                    <#if userLoginInfo??>
+                        <!--菜单栏-->
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="list-group ">
+                                    <a href="/qgyblog/user/blog/toadd" type="button" class="list-group-item">编写博客</a>
+                                    <a href="/qgyblog/user/blog/find/${(userLoginInfo.userId)!-1}/list" type="button"
+                                       class="list-group-item">我的博客</a>
+                                    <a href="/qgyblog/user/cb/find/myself" type="button" class="list-group-item">我的收藏</a>
+                                    <a href="/qgyblog/getui/user/userInfo/" type="button"
+                                       class="list-group-item">个人信息</a>
+                                </div>
+                            </div>
+                        </div>
+                    </#if>
+                </div>
+            </div>
+        </div>
+        <!--blog列表 采用首页的输出格式查询全部 按修改时间排序 带分页-->
+        <div class="col-md-9">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>我的的收藏</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <#if (pageBlogs)?? && ((pageBlogs.pageDate)?size!0)&gt;0>
+                                <#list pageBlogs.pageDate as item>
+                                    <#if ((item.blog.blogState)!0)!=1>
+                                    <a  onclick="checkDel('/qgyblog/user/cb/del/${(item.blog.blogId)!}/blog')" class="list-group-item ">
+                                    <#else>
+                                    <a href="/qgyblog/user/blog/find/${(item.blog.blogId)!}/detail" class="list-group-item ">
+                                     </#if>
+                                        <h4 class="list-group-item-heading">${(item.blog.blogTitle)!} </h4>
+                                        <p class="list-group-item-text">
+                                            <#if ((item.blog.blogState)!0)!=1>
+                                            <p class="text-danger">这篇博客已经下架，或者待审核状态，暂时无法查看，请谅解！！</p>
+                                            <#else>
+                                            ${(item.blog.blogDesc)!}
+                                            </#if>
+                            </p>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                ${(item.blog.user.userName)!}
+                                            </div>
+                                            <div class="col-md-2 text-center"><span class="label label-default">${(item.blog.allClass.allClassName)!}</span>
+                                            </div>
+                                            <div class="col-md-6 text-right"><span>${(item.blog.blogUpdateTime)!}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </#list>
+                                <#else>
+                                    <div class="text-center">
+                                        <h3>赶紧去收藏吧！！！</h3>
+                                    </div>
+
+                            </#if>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-center">
+                        <!--分页-->
+                        <#if ((pageBlogs)??)&&(((pageBlogs.pageDate)?size!0)&gt;0)>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="/qgyblog/user/cb/find/myself?page=1"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+
+                                    <#list 1..(pageBlogs.maxpage)!1 as num>
+                                        <li class="<#if pageBlogs.page==num>active</#if>"><a
+                                                href="/qgyblog/user/cb/find/myself?page=${num}">${num}</a>
+                                        </li>
+                                    </#list>
+
+                                    <li>
+                                        <a href="/qgyblog/user/cb/find/myself?page=${(pageBlogs.maxpage)!1}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <#else>
+                        </#if>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="hiddenUrl"></div>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">确认删除这条收藏吗?</h4>
+            </div>
+            <div class="modal-body">
+                <p>当该博客重新被审核时可见</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a id="delCollect" type="button" class="btn btn-primary">确认删除</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<!--<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>-->
+<script src="/qgyblog/js/common/jquery-1.9.1.min.js" type="text/javascript"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/qgyblog/js/common/bootstrap.min.js"></script>
+<script src="/qgyblog/js/common/wangEditor.js"></script>
+
+<!--弹出模态框-->
+<script type="text/javascript">
+    function checkDel(param) {
+
+        var delCollect = $("#delCollect");
+        delCollect.attr('href', param);
+//        为按钮附上超链接
+//        打开模态框
+         $("#myModal").modal('show');
+    }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+#jdbc的配置
+spring:
+  profiles:
+#  制定当前配置文件为dev
+    active: dev
